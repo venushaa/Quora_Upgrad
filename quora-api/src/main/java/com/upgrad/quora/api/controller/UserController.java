@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Base64;
 
+/**
+ * @author Abhishek
+ */
+
 @RestController
 @RequestMapping("/")
 public class UserController {
@@ -70,7 +74,7 @@ public class UserController {
             method = RequestMethod.POST,
             path = "/user/signin",
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<SigninResponse> signin(@RequestHeader("authorization") final String authorization)throws AuthenticationFailedException {
+    public ResponseEntity<SigninResponse> signin(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
 
         byte[] decode = Base64.getDecoder().decode(authorization.split("Basic ")[1]);
         String decodedText = new String(decode);
