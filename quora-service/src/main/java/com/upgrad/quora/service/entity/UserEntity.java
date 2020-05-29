@@ -10,12 +10,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
+/**
+ * @author Abhishek
+ */
+
 @Entity
 @Table(name = "users")
 @NamedQueries({
-        @NamedQuery(
-                name = "userByUserName",
-                query = "select u from UserEntity u where u.userName=:userName"),
+        @NamedQuery(name = "userByUserName", query = "select u from UserEntity u where u.userName=:userName"),
         @NamedQuery(name = "userByEmail", query = "select u from UserEntity u where u.email=:email"),
         @NamedQuery(name = "userByUserId", query = "select u from UserEntity u where u.uuid=:userId")
 })
