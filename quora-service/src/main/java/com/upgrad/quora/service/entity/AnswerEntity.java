@@ -10,6 +10,12 @@ import java.time.ZonedDateTime;
 
 @Entity
 @Table(name="answer", schema="public")
+@NamedQueries(
+        {
+                @NamedQuery(name="answerbyId",query="SELECT a from answer a where a.uuid=:uuid")
+        }
+
+)
 
 public class AnswerEntity implements Serializable {
 
@@ -38,7 +44,7 @@ public class AnswerEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name="QUESTION_ID")
-    private Question question;
+    private QuestionEntity question;
 
     public long getId() {
         return id;
@@ -80,11 +86,11 @@ public class AnswerEntity implements Serializable {
         this.user = user;
     }
 
-    public Question getQuestion() {
+    public QuestionEntity getQuestion() {
         return question;
     }
 
-    public void setQuestion(Question question) {
+    public void setQuestion(QuestionEntity question) {
         this.question = question;
     }
 
