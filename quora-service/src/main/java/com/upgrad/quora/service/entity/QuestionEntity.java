@@ -1,5 +1,10 @@
 package com.upgrad.quora.service.entity;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -8,10 +13,9 @@ import java.time.ZonedDateTime;
 @Entity
 @Table(name = "QUESTION", schema = "public")
 @NamedQueries(value = {
-        @NamedQuery(name = "QuestionByUserId", query = "select q from QuestionEntity  q where q.user_id = :user_id"),
-        @NamedQuery(name = "QuestionById", query = "select q from QuestionEntity q where q.uuid = :uuid"),
-        @NamedQuery(name = "AllQuestions", query = "select q from QuestionEntity q"),
-        @NamedQuery(name = "DeleteQuestion", query = "delete from QuestionEntity q where q.id = :id")
+        @NamedQuery(name = "questionsByUser", query = "select q from QuestionEntity  q where q.user_id = :user_id"),
+        @NamedQuery(name = "questionById", query = "select q from QuestionEntity q where q.uuid = :uuid"),
+        @NamedQuery(name = "allQuestions", query = "select q from QuestionEntity q")
 
 })
 
@@ -37,6 +41,10 @@ public class  QuestionEntity implements Serializable {
     @JoinColumn(name = "USER_ID")
     private UserEntity user;
 
+
+    public QuestionEntity() {
+        //
+    }
 
     public long getId() {
         return id;
@@ -77,4 +85,20 @@ public class  QuestionEntity implements Serializable {
     public void setUser(UserEntity user) {
         this.user = user;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return new EqualsBuilder().append(this, obj).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(this).hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
+
 }

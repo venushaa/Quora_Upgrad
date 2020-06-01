@@ -22,7 +22,7 @@ public class QuestionDao {
 
     public List<QuestionEntity> getAllQuestions() {
         try {
-            return entityManager.createNamedQuery ("AllQuestions",QuestionEntity.class).getResultList();
+            return entityManager.createNamedQuery("allQuestions",QuestionEntity.class).getResultList();
         } catch (NoResultException nre) { return null;}
     }
 

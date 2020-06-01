@@ -11,11 +11,11 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "USERS", schema = "public")
-@NamedQueries({
+/*@NamedQueries({
         @NamedQuery(name = "userByEmail", query = "select u from UserEntity u where u.email = :email"),
         @NamedQuery(name= "userByUserName",query = "select u from UserEntity u where u.username = :username"),
         @NamedQuery(name= "userById",query = "select u from UserEntity u where u.uuid = :uuid")
-})
+})*/
 
 public class UserEntity implements Serializable {
 
@@ -76,6 +76,10 @@ public class UserEntity implements Serializable {
     @Column(name = "DOB")
     @Size(max = 30)
     private String dob;
+
+    public UserEntity() {
+    //
+    }
 
     public long getId() {
         return id;
