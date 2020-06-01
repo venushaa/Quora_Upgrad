@@ -10,10 +10,8 @@ public class UnexpectedException extends RuntimeException {
     private static final long serialVersionUID = 2737472949025937415L;
 
     private final ErrorCode errorCode;
-
-    private Throwable cause;
-
     private final Object[] parameters;
+    private Throwable cause;
 
     public UnexpectedException(final ErrorCode errorCode, final Object... parameters) {
         super();
