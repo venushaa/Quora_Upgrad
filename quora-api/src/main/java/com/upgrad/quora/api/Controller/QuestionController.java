@@ -35,13 +35,14 @@ public class QuestionController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/question/create", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<QuestionResponse> createQuestion(final QuestionRequest questionRequest, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException {
+
         String[] bearerToken = authorization.split("Bearer ");
         final QuestionEntity questionEntity = new QuestionEntity();
         questionEntity.setUuid(UUID.randomUUID().toString());
         questionEntity.setContent(questionRequest.getContent());
         final ZonedDateTime now = ZonedDateTime.now();
         questionEntity.setDate(now);
-        //UserEntity userEntity = commonBusinessService.authorizeUser(bearerToken[1]);
+        //UserEntity userEntity = commonBusinessService.userProfile(bearerToken[1]);
         //Venkat - Uncomment above line and remove below line
         UserEntity userEntity = new UserEntity();
         questionEntity.setUser(userEntity);
@@ -54,7 +55,7 @@ public class QuestionController {
     @RequestMapping(method = RequestMethod.GET, path = "/question/all", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<QuestionDetailsResponse>> getAllQuestions(@RequestHeader("authorization") final String authorization) throws AuthorizationFailedException {
         String[] bearerToken = authorization.split("Bearer ");
-//        UserEntity userEntity = commonBusinessService.authorizeUser(bearerToken[1]);
+//        UserEntity userEntity = commonBusinessService.userProfile(bearerToken[1]);
         //Venkat - Uncomment above line and remove below line
         UserEntity userEntity = new UserEntity();
         Iterator<QuestionEntity> itrQuestions = questionBusinessService.getAllQuestions().iterator();
@@ -74,7 +75,7 @@ public class QuestionController {
     @RequestMapping(method = RequestMethod.PUT, path = "/question/edit/{questionId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<QuestionEditResponse> editQuestion(final QuestionEditRequest questionEditRequest, @PathVariable("questionId") final String question_id, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException, InvalidQuestionException {
         String[] bearerToken = authorization.split("Bearer ");
-//        UserEntity signedinUser = commonBusinessService.authorizeUser(bearerToken[1]);
+//        UserEntity signedinUser = commonBusinessService.userProfile(bearerToken[1]);
         //Venkat - Uncomment above line and remove below line
         UserEntity signedinUser = new UserEntity();
 
@@ -90,7 +91,7 @@ public class QuestionController {
     public ResponseEntity<QuestionDeleteResponse> deleteQuestion(@PathVariable("questionId") final String question_id, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException {
         String[] bearerToken = authorization.split("Bearer ");
         //check if the user is signed in
-//        UserEntity signedinUser = commonBusinessService.authorizeUser(bearerToken[1]);
+//        UserEntity signedinUser = commonBusinessService.userProfile(bearerToken[1]);
         //Venkat - Uncomment above line and remove below line
         UserEntity signedinUser = new UserEntity();
         QuestionEntity questionEntity = questionBusinessService.getQuestionById(question_id);

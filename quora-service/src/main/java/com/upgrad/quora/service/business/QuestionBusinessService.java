@@ -55,6 +55,7 @@ package com.upgrad.quora.service.business;
                 throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
             }
             UserEntity questionOwner = questionEntity.getUser();
+            //Venkat - fix the followng while integrating
             String qOwner = "111"; //questionOwner.getUuid();
             String currentUser = "111"; //signedinUser.getUuid()
             if (!(qOwner.equals(currentUser))) {
@@ -68,6 +69,7 @@ package com.upgrad.quora.service.business;
             if (questionEntity == null) {
                 throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
             }
+            //Venkat - fix the followng while integrating
             String qOwner = "111"; //questionOwner.getUuid();
             String currentUser = "111"; //signedinUser.getUuid()
             String role = "admin"; //signedinUser.getRole();
