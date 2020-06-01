@@ -6,6 +6,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
+@Repository
+public class UserDao {
+
 /**
  * @author Abhishek
  */
