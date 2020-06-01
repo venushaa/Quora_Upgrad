@@ -1,6 +1,5 @@
 package com.upgrad.quora.api.controller;
 
-
 import com.upgrad.quora.api.model.SigninResponse;
 import com.upgrad.quora.api.model.SignupUserRequest;
 import com.upgrad.quora.api.model.SignupUserResponse;
@@ -33,8 +32,7 @@ public class UserController {
     private UserAuthenticationService userAuthService;
 
     /**
-     * This method is for user signup. This method receives the object of SignupUserRequest type with its attributes being set.
-     *
+     * This method is for user signup. This method receives the object of SignupUserRequest type with its attributes being set
      * @return SignupUserResponse - UUID of the user created.
      * @throws SignUpRestrictedException - if the username or email already exist in the database.
      */

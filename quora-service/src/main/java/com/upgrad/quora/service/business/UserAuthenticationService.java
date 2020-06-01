@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -32,8 +31,7 @@ public class UserAuthenticationService {
 
     /**
      * This method checks if the username and email exist in the DB. if the username or email doesn't
-     * exist in the DB.then assign uuid to the user. Assign encrypted password and salt to the user.
-     *
+     * exist in the DB.then assign uuid to the user. Assign encrypted password and salt to the user
      * @throws SignUpRestrictedException SGR-001 if the username exist in the DB , SGR-002 if the email exist in the DB.
      */
     @Transactional(propagation = Propagation.REQUIRED)
@@ -60,8 +58,7 @@ public class UserAuthenticationService {
      * @param username Username of the user who is singing in.
      * @param password Credentials of the user who is singing in
      * @return UserAuthEntity which contains the access-token and other details.
-     * @throws AuthenticationFailedException ATH-001 if the username doesn't exist in DB or ATH-002 if
-     *                                       the password is wrong.
+     * @throws AuthenticationFailedException ATH-001 if the username doesn't exist in DB or ATH-002 if the password is wrong.
      */
     @Transactional(propagation = Propagation.REQUIRED)
     public UserAuthEntity signin(final String username, final String password)
@@ -82,17 +79,14 @@ public class UserAuthenticationService {
         userAuthEntity.setUserEntity(userEntity);
         final ZonedDateTime now = ZonedDateTime.now();
         final ZonedDateTime expiresAt = now.plusHours(8);
-        userAuthEntity.setAccessToken(
-                jwtTokenProvider.generateToken(userEntity.getUuid(), now, expiresAt));
+        userAuthEntity.setAccessToken(jwtTokenProvider.generateToken(userEntity.getUuid(), now, expiresAt));
         userAuthEntity.setLoginAt(now);
         userAuthEntity.setExpiresAt(expiresAt);
-
         userAuthDao.createAuthToken(userAuthEntity);
         userDao.updateUserEntity(userEntity);
 
         return userAuthEntity;
     }
-
     // checks whether the username exist in the database
     private boolean isUserNameInUse(final String userName) {
         return userDao.getUserByUserName(userName) != null;
