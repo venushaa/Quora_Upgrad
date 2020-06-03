@@ -61,8 +61,7 @@ public class UserAuthenticationService {
      * @throws AuthenticationFailedException ATH-001 if the username doesn't exist in DB or ATH-002 if the password is wrong.
      */
     @Transactional(propagation = Propagation.REQUIRED)
-    public UserAuthEntity signin(final String username, final String password)
-            throws AuthenticationFailedException {
+    public UserAuthEntity signin(final String username, final String password) throws AuthenticationFailedException {
 
         UserEntity userEntity = userDao.getUserByUserName(username);
         if (userEntity == null) {
