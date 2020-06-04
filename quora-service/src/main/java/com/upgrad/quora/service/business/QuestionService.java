@@ -54,10 +54,8 @@ public class QuestionService {
             throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
         }
         //UserEntity questionOwner = questionEntity.getUser();
-        //Venkat - fix the followng while integrating
-        String qOwner = "111"; //questionOwner.getUuid();
-        String currentUser = "111"; //signedinUser.getUuid()
-        if (!(qOwner.equals(currentUser))) {
+        UserEntity questionOwner = questionEntity.getUserEntity();
+        if (!questionOwner.getUuid().equals(signedinUser.getUuid())) {
             throw new AuthorizationFailedException("ATHR-003", "Only the question owner can edit the question");
         }
         questionDao.editQuestionContent(questionEntity);
@@ -68,12 +66,9 @@ public class QuestionService {
         if (questionEntity == null) {
             throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
         }
-        //Venkat - fix the followng while integrating
-        String qOwner = "111"; //questionOwner.getUuid();
-        String currentUser = "111"; //signedinUser.getUuid()
-        String role = "admin"; //signedinUser.getRole();
-        //UserEntity questionOwner = questionEntity.getUser();
-        if (!(qOwner.equals(currentUser) || role.equals("admin"))) {
+        String role = signedinUser.getRole();
+        UserEntity questionOwner = questionEntity.getUserEntity();
+        if (!(questionOwner.getUuid().equals(signedinUser.getUuid()) || role.equals("admin"))) {
             throw new AuthorizationFailedException("ATHR-003", "Only the question owner or admin can delete the question");
         }
         questionDao.deleteQuestion(questionEntity);

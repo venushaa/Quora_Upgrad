@@ -25,8 +25,6 @@ import java.util.UUID;
 @RequestMapping("/")
 public class QuestionController {
 
-    //   @Autowired
-    //  private CommonBusinessService commonBusinessService;
 
     @Autowired
     private QuestionService questionService;
@@ -43,11 +41,7 @@ public class QuestionController {
         questionEntity.setContent(questionRequest.getContent());
         final ZonedDateTime now = ZonedDateTime.now();
         questionEntity.setDate(now);
-        //UserEntity userEntity = commonBusinessService.userProfile(bearerToken[1]);
-        //Venkat - Uncomment above line and remove below line
-        //UserEntity userEntity = new UserEntity();
         questionEntity.setUserEntity(userAuthEntity.getUserEntity());
-                // commonUserService.getUserById("e2e9d75b-868c-4166-845e-6a0860d66902"));
         final QuestionEntity createdQuestionEntity = questionService.createQuestion(questionEntity);
         QuestionResponse questionResponse = new QuestionResponse().id(createdQuestionEntity.getUuid()).status("QUESTION CREATED");
         return new ResponseEntity<QuestionResponse>(questionResponse, HttpStatus.CREATED);
@@ -58,22 +52,15 @@ public class QuestionController {
    @RequestMapping(method = RequestMethod.GET, path = "/question/all", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<QuestionDetailsResponse>> getAllQuestions(@RequestHeader("authorization") final String authorization) throws AuthorizationFailedException {
         String[] bearerToken = authorization.split("Bearer ");
-        UserAuthEntity userAuthEntity = commonUserService.checkIfTokenIsValid(authorization);
-        //UserEntity userEntity = commonUserService.userProfile(bearerToken[1]);
-        //Venkat - Uncomment above line and remove below line
-        //UserEntity userEntity = new UserEntity();
-
+        UserAuthEntity userAuthEntity = commonUserService.checkIfTokenIsValid(bearerToken[1]);
         Iterator<QuestionEntity> itrQuestions = questionService.getAllQuestions().iterator();
         List<QuestionDetailsResponse> questionResponseList = new ArrayList<QuestionDetailsResponse>();
         while (itrQuestions.hasNext()) {
             QuestionEntity questionEntity = itrQuestions.next();
-
              ((ArrayList) questionResponseList).add(new QuestionDetailsResponse().id(questionEntity.getUuid()).
                     content(questionEntity.getContent()));
         }
-
         return new ResponseEntity<List<QuestionDetailsResponse>>(questionResponseList, HttpStatus.OK);
-
     }
 
 
@@ -81,8 +68,6 @@ public class QuestionController {
     public ResponseEntity<QuestionDeleteResponse> deleteQuestion(@PathVariable("questionId") final String question_id, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException, InvalidQuestionException {
         String[] bearerToken = authorization.split("Bearer ");
         //check if the user is signed in
-//        UserEntity signedinUser = commonBusinessService.userProfile(bearerToken[1]);
-        //Venkat - Uncomment above line and remove below line
         UserEntity signedinUser = commonUserService.checkIfTokenIsValid(bearerToken[1]).getUserEntity();
         QuestionEntity questionEntity = questionService.getQuestionById(question_id);
 
@@ -93,13 +78,10 @@ public class QuestionController {
     }
 
 
- /*   @RequestMapping(method = RequestMethod.PUT, path = "/question/edit/{questionId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<QuestionEditResponse> editQuestion(final QuestionEditRequest questionEditRequest, @PathVariable("questionId") final String question_id, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException, InvalidQuestionException {
+    @RequestMapping(method = RequestMethod.PUT, path = "/question/edit/{questionId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<QuestionEditResponse> editQuestion(final QuestionEditRequest questionEditRequest, @PathVariable("questionId") final String question_id, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException {
         String[] bearerToken = authorization.split("Bearer ");
-//        UserEntity signedinUser = commonBusinessService.userProfile(bearerToken[1]);
-        //Venkat - Uncomment above line and remove below line
-        UserEntity signedinUser = new UserEntity();
-
+        UserEntity signedinUser = commonUserService.checkIfTokenIsValid(bearerToken[1]).getUserEntity();
         QuestionEntity questionEntity = questionService.getQuestionById(question_id);
         questionEntity.setContent(questionEditRequest.getContent());
         //check if the user is authorized to edit a question before allowing to do so
@@ -110,22 +92,16 @@ public class QuestionController {
 
 
 
-    // get all the questions posted by a given user in the json request
+    //get all the questions posted by a given user in the json request
     @RequestMapping(method = RequestMethod.GET, path = "question/all/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<QuestionDetailsResponse>> getQuestionsByUser(@PathVariable("userId") final String userId, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, UserNotFoundException {
         String[] bearerToken = authorization.split("Bearer ");
-        //UserEntity userEntity = commonBusinessService.getUser(userId,bearerToken[1]);
-        //Long user_id =userEntity.getId();
-        //Venkat Uncomment above two lines and remove below two lines
-        Long user_id = 1L;
-        UserEntity userEntity = new UserEntity();
+        UserEntity userEntity = commonUserService.checkIfTokenIsValid(bearerToken[1]).getUserEntity();
         //Venkat uncomment lone below
         Iterator<QuestionEntity> itrQuestions = questionService.getQuestionsByUser(userEntity).iterator();
         List<QuestionDetailsResponse> questionResponseList = new ArrayList<QuestionDetailsResponse>();
         while (itrQuestions.hasNext()) {
             QuestionEntity questionEntity = itrQuestions.next();
-            //questionResponseList.add(new QuestionDetailsResponse().id(itrQuestions.next().getUuid()).
-            //      content(itrQuestions.next().getContent()));
             questionResponseList.add(new QuestionDetailsResponse().id(questionEntity.getUuid()).
                     content(questionEntity.getContent()));
         }
@@ -133,5 +109,5 @@ public class QuestionController {
 
 
     }
-*/
+
 }
