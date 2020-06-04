@@ -4,53 +4,56 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 @Entity
-@Table(name = "QUESTION", schema = "public")
-@NamedQueries(value = {
-        @NamedQuery(name = "questionsByUser", query = "select q from QuestionEntity  q where q.user_id = :user_id"),
-        @NamedQuery(name = "questionById", query = "select q from QuestionEntity q where q.uuid = :uuid"),
-        @NamedQuery(name = "allQuestions", query = "select q from QuestionEntity q")
-
+@Table(name = "question")
+@NamedQueries({
+        @NamedQuery(name = "getAllQuestions", query = "select q from QuestionEntity q"),
+        @NamedQuery(
+                name = "getQuestionById",
+                query = "select q from QuestionEntity q where q.uuid=:uuid"),
+        @NamedQuery(
+                name = "getQuestionByUser",
+                query = "select q from QuestionEntity q where q.userEntity=:user")
 })
-
-
-public class  QuestionEntity implements Serializable {
+public class QuestionEntity {
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Integer id;
 
-    @Column(name = "UUID")
-    @Size(max = 64)
+    @Column(name = "uuid")
+    @Size(max = 200)
+    @NotNull
     private String uuid;
 
-    @Column(name = "CONTENT")
+    @Column(name = "content")
+    @Size(max = 500)
+    @NotNull
     private String content;
 
-    @Column(name = "DATE")
+    @Column(name = "date")
+    @NotNull
     private ZonedDateTime date;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    private UserEntity user;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "user_id")
+    private UserEntity userEntity;
 
-
-    public QuestionEntity() {
-        //
-    }
-
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -78,12 +81,12 @@ public class  QuestionEntity implements Serializable {
         this.date = date;
     }
 
-    public UserEntity getUser() {
-        return user;
+    public UserEntity getUserEntity() {
+        return userEntity;
     }
 
-    public void setUser(UserEntity user) {
-        this.user = user;
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
     }
 
     @Override
