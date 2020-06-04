@@ -6,9 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
-@Repository
-public class UserDao {
-
 /**
  * @author Abhishek
  */
@@ -25,6 +22,7 @@ public class UserDao {
     public UserEntity createUser(UserEntity userEntity) {
         entityManager.persist(userEntity);
         return userEntity;
+    }
 
      /**
      * Fetch a single user by given id from the DB.
