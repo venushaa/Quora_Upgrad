@@ -5,13 +5,11 @@ import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserAuthEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthenticationFailedException;
-import com.upgrad.quora.service.exception.SignOutRestrictedException;
 import com.upgrad.quora.service.exception.SignUpRestrictedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -34,7 +32,6 @@ public class UserAuthenticationService {
     /**
      * This method checks if the username and email exist in the DB. if the username or email doesn't
      * exist in the DB.then assign uuid to the user. Assign encrypted password and salt to the user
-     *
      * @throws SignUpRestrictedException SGR-001 if the username exist in the DB , SGR-002 if the email exist in the DB.
      */
     @Transactional(propagation = Propagation.REQUIRED)
@@ -70,7 +67,7 @@ public class UserAuthenticationService {
         if (userEntity == null) {
             throw new AuthenticationFailedException("ATH-001", "This username does not exist");
         }
-        final String encryptedPassword = PasswordCryptographyProvider.encrypt(password, userEntity.getSalt());
+        final String encryptedPassword = passwordCryptographyProvider.encrypt(password, userEntity.getSalt());
         if (!encryptedPassword.equals(userEntity.getPassword())) {
             throw new AuthenticationFailedException("ATH-002", "Password failed");
         }
@@ -89,7 +86,6 @@ public class UserAuthenticationService {
 
         return userAuthEntity;
     }
-
     // checks whether the username exist in the database
     private boolean isUserNameInUse(final String userName) {
         return userDao.getUserByUserName(userName) != null;
@@ -98,23 +94,5 @@ public class UserAuthenticationService {
     // checks whether the email exist in the database
     private boolean isEmailInUse(final String email) {
         return userDao.getUserByEmail(email) != null;
-    }
-
-    /**
-     * This method is used by user to signout.
-     *
-     * @param accessToken Access token of the user.
-     * @return UserEntity details of the signed out user.
-     * @throws SignOutRestrictedException SGR-001 if the access-token is not present in the DB.
-     */
-    @Transactional(propagation = Propagation.REQUIRED)
-    public UserEntity signout(final String accessToken) throws SignOutRestrictedException {
-        UserAuthEntity userAuthEntity = userAuthDao.getUserAuthByToken(accessToken);
-        if (userAuthEntity == null) {
-            throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
-        }
-        userAuthEntity.setLogoutAt(ZonedDateTime.now());
-        userAuthDao.updateUserAuth(userAuthEntity);
-        return userAuthEntity.getUserEntity();
     }
 }
