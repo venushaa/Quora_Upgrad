@@ -2,6 +2,7 @@ package com.upgrad.quora.service.dao;
 
 import com.upgrad.quora.service.entity.UserAuthEntity;
 import org.springframework.stereotype.Repository;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -35,6 +36,7 @@ public class UserAuthDao {
 
     /**
      * Persist UserAuthEntity object in DB.
+     *
      * @param userAuthEntity to be persisted in the DB.
      * @return Persisted UserAuthEntity object
      */
@@ -45,6 +47,7 @@ public class UserAuthDao {
 
     /**
      * Updates the UserAuthEntity object present in the DB.
+     *
      * @param updatedUserAuthEntity Persisted UserAuthEntity object
      */
     public void updateUserAuth(final UserAuthEntity updatedUserAuthEntity) {
