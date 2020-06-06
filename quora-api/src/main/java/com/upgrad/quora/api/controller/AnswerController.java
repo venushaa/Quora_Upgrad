@@ -3,7 +3,7 @@ package com.upgrad.quora.api.controller;
 import com.upgrad.quora.api.model.*;
 import com.upgrad.quora.service.business.AnswerService;
 import com.upgrad.quora.service.business.CommonUserService;
-import com.upgrad.quora.service.business.QuestionBusinessService;
+import com.upgrad.quora.service.business.QuestionService;
 import com.upgrad.quora.service.entity.AnswerEntity;
 import com.upgrad.quora.service.entity.QuestionEntity;
 import com.upgrad.quora.service.entity.UserAuthEntity;
@@ -30,24 +30,16 @@ public class AnswerController {
     private AnswerService answerService;
 
     @Autowired
-    private QuestionBusinessService questionBusinessService;
+    private QuestionService questionService;
 
     @Autowired
     private CommonUserService commonUserService;
 
     @RequestMapping(method = RequestMethod.POST, path = "/question/{questionId}/answer/create", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<AnswerResponse> createAnswer(@PathVariable("questionId") Integer questionId , final AnswerRequest answerRequest, @RequestHeader final String authorization) throws AuthorizationFailedException, InvalidQuestionException {
-        final UserAuthEntity userAuthEntity = commonUserService.checkIfTokenIsValid(authorization);
+    public ResponseEntity<AnswerResponse> createAnswer(@PathVariable("questionId") String questionId , final AnswerRequest answerRequest, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException {
+        final UserAuthEntity userAuthEntity = commonUserService.checkIfTokenIsValid(authorization.split("Bearer ")[1]);
 
-        QuestionEntity question = questionBusinessService.getQuestionById(questionId);
-
-     /*   QuestionEntity question = new QuestionEntity();
-        question.setId(1024);
-        question.setUuid("database_question_uuid");
-        question.setContent("database_question_content");
-        question.setDate(ZonedDateTime.now());
-        question.setUser(userAuthEntity.getUserEntity());*/
-
+        QuestionEntity question = questionService.getQuestionById(questionId);
 
         final AnswerEntity answerEntity = new AnswerEntity();
         answerEntity.setQuestion(question);
@@ -63,10 +55,10 @@ public class AnswerController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, path = "/answer/edit/{answerId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<AnswerEditResponse>  editAnswerContent(@PathVariable("answerId") Integer answerId, final AnswerRequest answerRequest, @RequestHeader final String authorization) throws AuthorizationFailedException, AnswerNotFoundException {
-        final UserAuthEntity userAuthEntity = commonUserService.checkIfTokenIsValid(authorization);
+    public ResponseEntity<AnswerEditResponse>  editAnswerContent(@PathVariable("answerId") String answerId, final AnswerEditRequest answerEditRequest, @RequestHeader("authorization") final String authorization ) throws AuthorizationFailedException, AnswerNotFoundException {
+        final UserAuthEntity userAuthEntity = commonUserService.checkIfTokenIsValid(authorization.split("Bearer ")[1]);
 
-        AnswerEntity editedAnswerEntity = answerService.editAnswer(answerId,userAuthEntity);
+        AnswerEntity editedAnswerEntity = answerService.editAnswer(answerId,userAuthEntity,answerEditRequest.getContent());
 
         AnswerEditResponse answerEditResponse = new AnswerEditResponse().id(editedAnswerEntity.getUuid().toString()).status("ANSWER EDITED");
 
@@ -74,34 +66,28 @@ public class AnswerController {
 
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, path = "/answer/delete/{answerId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<AnswerDeleteResponse> deleteAnswer(@PathVariable Integer answerID, @RequestHeader String authorization, final AnswerRequest answerRequest) throws AuthorizationFailedException, AnswerNotFoundException {
-        final UserAuthEntity userAuthEntity = commonUserService.checkIfTokenIsValid(authorization);
+    @RequestMapping(method = RequestMethod.DELETE, path = "/answer/delete/{answerId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<AnswerDeleteResponse> deleteAnswer(@PathVariable("answerId") String answerID,    @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, AnswerNotFoundException {
+        final UserAuthEntity userAuthEntity = commonUserService.checkIfTokenIsValid(authorization.split("Bearer ")[1]);
 
         AnswerEntity deletedAnswerEntity = answerService.deleteAnswer(answerID,userAuthEntity);
         AnswerDeleteResponse answerDeleteResponse = new AnswerDeleteResponse().id(deletedAnswerEntity.getUuid().toString()).status("ANSWER DELETED");
 
         return  new ResponseEntity<AnswerDeleteResponse>(answerDeleteResponse, HttpStatus.OK);
-
-
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/answer/all/{questionId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<List<AnswerDetailsResponse>> getAllAnswersToQuestion(@PathVariable Integer questionId, @RequestHeader String authorization, final AnswerRequest answerRequest) throws AuthorizationFailedException, InvalidQuestionException {
-        final UserAuthEntity userAuthEntity = commonUserService.checkIfTokenIsValid(authorization);
+    @RequestMapping(method = RequestMethod.GET, path = "/answer/all/{questionId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<List<AnswerDetailsResponse>> getAllAnswersToQuestion(@PathVariable String questionId, @RequestHeader("authorization") String authorization) throws AuthorizationFailedException, InvalidQuestionException {
+        final UserAuthEntity userAuthEntity = commonUserService.checkIfTokenIsValid(authorization.split("Bearer ")[1]);
 
-        QuestionEntity questionEntity = questionBusinessService.getQuestionById(questionId);
-
-        List<AnswerEntity> allAnswers = answerService.getAnswersbyQuestionID(questionId,userAuthEntity);
-     //   List<AnswerEntity> allAnswers = answerService.getAnswersbyQuestionID(1024,userAuthEntity);
-
+        QuestionEntity questionEntity = questionService.getQuestionById(questionId);
+        List<AnswerEntity> allAnswers = answerService.getAnswersbyQuestionID(questionEntity,userAuthEntity);
         Iterator<AnswerEntity> allAnswersIterator = allAnswers.iterator();
 
         List<AnswerDetailsResponse> answerDetailsResponseList = new ArrayList<AnswerDetailsResponse>() ;
 
         while(allAnswersIterator.hasNext()){
             AnswerEntity answerEntity = allAnswersIterator.next();
-          //  answerDetailsResponseList.add(new AnswerDetailsResponse().id(answerEntity.getUuid().toString()).answerContent(answerEntity.getAnswer()).questionContent("temp"));
             answerDetailsResponseList.add(new AnswerDetailsResponse().id(answerEntity.getUuid().toString()).answerContent(answerEntity.getAnswer()).questionContent(answerEntity.getQuestion().getContent()));
         }
 

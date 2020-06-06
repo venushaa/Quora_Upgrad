@@ -32,4 +32,6 @@ public class RestExceptionHandler {
         return new ResponseEntity<AnswerResponse>(
                 new AnswerResponse().id(exc.getCode()).status(exc.getErrorMessage()), HttpStatus.UNAUTHORIZED);
     }
+
+
 }
