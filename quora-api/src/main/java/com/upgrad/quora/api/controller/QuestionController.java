@@ -78,11 +78,24 @@ public class QuestionController {
     }
 
 
-    @RequestMapping(method = RequestMethod.PUT, path = "/question/edit/{questionId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<QuestionEditResponse> editQuestion(final QuestionEditRequest questionEditRequest, @PathVariable("questionId") final String question_id, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException {
+    @RequestMapping(method = RequestMethod.PUT, path = "/question/edit/{questionId}",  produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<QuestionEditResponse> editQuestion(
+            @RequestHeader("authorization") final String authorization,
+            @PathVariable("questionId") final String question_id,
+            QuestionEditRequest questionEditRequest
+            )
+            throws AuthorizationFailedException, InvalidQuestionException {
         String[] bearerToken = authorization.split("Bearer ");
+
         UserEntity signedinUser = commonUserService.checkIfTokenIsValid(bearerToken[1]).getUserEntity();
-        QuestionEntity questionEntity = questionService.getQuestionById(question_id);
+
+        QuestionEntity questionEntity;
+        try {
+            questionEntity = questionService.getQuestionById(question_id);
+        }
+        catch (InvalidQuestionException i) {
+            throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
+        }
         questionEntity.setContent(questionEditRequest.getContent());
         //check if the user is authorized to edit a question before allowing to do so
         questionService.editQuestionContent(signedinUser, questionEntity);
