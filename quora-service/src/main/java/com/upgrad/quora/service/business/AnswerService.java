@@ -2,6 +2,8 @@ package com.upgrad.quora.service.business;
 
 import com.upgrad.quora.service.dao.AnswerDao;
 import com.upgrad.quora.service.entity.AnswerEntity;
+import com.upgrad.quora.service.entity.QuestionEntity;
+import com.upgrad.quora.service.entity.UserAuthEntity;
 import com.upgrad.quora.service.exception.AnswerNotFoundException;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
@@ -13,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * @author Abhishek
+ * @author Viren Deshpande
  */
 
 @Service
@@ -34,7 +36,7 @@ public class AnswerService {
      * @param authorizationToken authorization token
      * @param answerEntity answer entity will have all the fields set
      * @return UserAuthEntity which contains the access-token and other details.
-     * @throws AuthorizationFailedException ATH-001 if the username doesn't exist in DB or ATH-002 if the token is expired.
+     * @throws @AuthorizationFailedException ATH-001 if the username doesn't exist in DB or ATH-002 if the token is expired.
      */
     @Transactional(propagation = Propagation.REQUIRED)
     public AnswerEntity createAnswer(AnswerEntity answerEntity, final String authorizationToken) throws AuthorizationFailedException {
@@ -53,7 +55,7 @@ public class AnswerService {
      *
      * @param answerId answerID
      * @return AnswerEntity which contains the access-token and other details.
-     * @throws AnswerNotFoundException ANS-001 If the Answer ID is not present in the database.
+     * @throws @AnswerNotFoundException ANS-001 If the Answer ID is not present in the database.
      */
     public AnswerEntity getAnswerbyId(String answerId) throws AnswerNotFoundException {
         AnswerEntity answerEntity = answerDao.getAnswerbyId(answerId);
@@ -64,12 +66,13 @@ public class AnswerService {
     }
 
     /**
-     * Deletes an answer from answer id.
+     * Deletes an answer using answer id.
      *
      * @param answerId answerID
      * @param authorizationToken authorization token
      * @return AnswerEntity which contains the access-token and other details.
-     * @throws AnswerNotFoundException ANS-001 If the Answer ID is not present in the database.
+     * @throws @AuthorizationFailedException ATH-001 if the username doesn't exist in DB or ATH-002 if the token is expired.
+     * @throws @AnswerNotFoundException ANS-001 If the Answer ID is not present in the database.
      */
     @Transactional(propagation = Propagation.REQUIRED)
     public AnswerEntity deleteAnswer(String answerId, final String authorizationToken) throws AuthorizationFailedException, AnswerNotFoundException {
@@ -88,6 +91,16 @@ public class AnswerService {
         }
     }
 
+    /**
+     * Edits an answer using answer id.
+     *
+     * @param answerId answerID
+     * @param authorizationToken authorization token
+     * @param editedAnswer New answer which is to be updated
+     * @return AnswerEntity which contains the access-token and other details.
+     * @throws @AnswerNotFoundException ANS-001 If the Answer ID is not present in the database.
+     * @throws @AuthorizationFailedException ATH-001 if the username doesn't exist in DB or ATH-002 if the token is expired.
+     */
     @Transactional(propagation = Propagation.REQUIRED)
     public AnswerEntity editAnswer(String answerId, final String authorizationToken, String editedAnswer) throws AnswerNotFoundException, AuthorizationFailedException {
         UserAuthEntity userAuthEntity;
@@ -104,6 +117,15 @@ public class AnswerService {
         }
     }
 
+    /**
+     * Edits an answer using answer id.
+     *
+     * @param questionId question id which answers are to be retrieved
+     * @param authorizationToken authorization token
+     * @return AnswerEntity List of answer entities which contains the access-token and other details.
+     * @throws @InvalidQuestionException QUES-001 If the Question ID is not present in the database.
+     * @throws @AuthorizationFailedException ATH-001 if the username doesn't exist in DB or ATH-002 if the token is expired.
+     */
     public List<AnswerEntity> getAnswersbyQuestionID(String questionId, final String authorizationToken) throws AuthorizationFailedException, InvalidQuestionException {
         UserAuthEntity userAuthEntity;
         userAuthEntity = answerUserService.checkIfTokenIsValid(authorizationToken);

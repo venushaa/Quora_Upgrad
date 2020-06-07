@@ -8,6 +8,12 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
+
+/**
+ * @author Viren Deshpande
+ */
+
+
 @Entity
 @Table(name="answer", schema="public")
 @NamedQueries(

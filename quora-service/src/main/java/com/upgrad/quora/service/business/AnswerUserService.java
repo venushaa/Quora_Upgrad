@@ -1,11 +1,13 @@
 package com.upgrad.quora.service.business;
 
+import com.upgrad.quora.service.dao.UserAuthDao;
+import com.upgrad.quora.service.entity.UserAuthEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * @author Abhishek
+ * @author Viren Deshpande
  */
 
 @Service
@@ -14,6 +16,12 @@ public class AnswerUserService {
     @Autowired
     UserAuthDao userAuthDao;
 
+    /**
+     * Gets the user auth information based on the access token.
+     *
+     * @param accessToken access token of the user auth whose details is to be fetched.
+     * @return A single user auth object or null
+     */
     public UserAuthEntity checkIfTokenIsValid(String accessToken) throws AuthorizationFailedException {
         UserAuthEntity userAuthEntity = userAuthDao.getUserAuthByToken(accessToken);
         if (userAuthEntity == null) {
