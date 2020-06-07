@@ -30,7 +30,7 @@ public class AdminService {
      *
      * @param accessToken token to be validated.
      * @throws AuthorizationFailedException ATHR-001 if the token doesn't exit in the DB , ATHR-002 if
-     *                                      the user has already logged out using the token.
+     *                                      the user has already logged out using the token or ATHR-003 if Unauthorized Access, Entered user is not an admin.
      */
     public void checkIfTokenIsValid(String accessToken) throws AuthorizationFailedException {
         UserAuthEntity userAuthEntity = userAuthDao.getUserAuthByToken(accessToken);
@@ -40,7 +40,7 @@ public class AdminService {
         if (userAuthEntity.getLogoutAt() != null) {
             throw new AuthorizationFailedException("ATHR-002", "User is signed out.");
         }
-        if(NON_ADMIN_ROLE.equals(userAuthEntity.getLogoutAt())){
+        if(userAuthEntity.getUserEntity() != null && NON_ADMIN_ROLE.equals(userAuthEntity.getUserEntity().getRole())){
             throw new AuthorizationFailedException("ATHR-003", "Unauthorized Access, Entered user is not an admin");
         }
     }
