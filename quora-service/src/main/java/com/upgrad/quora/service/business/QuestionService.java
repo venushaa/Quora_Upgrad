@@ -1,7 +1,9 @@
 package com.upgrad.quora.service.business;
 
 import com.upgrad.quora.service.dao.QuestionDao;
+import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.QuestionEntity;
+import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
 import com.upgrad.quora.service.exception.UserNotFoundException;
@@ -11,11 +13,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-// import com.upgrad.quora.service.dao.UserDao;
-//import com.upgrad.quora.service.entity.UserAuthTokenEntity;
-//import com.upgrad.quora.service.entity.UserEntity;
-//import com.upgrad.quora.service.exception.UploadFailedException;
 
 
 @Service
