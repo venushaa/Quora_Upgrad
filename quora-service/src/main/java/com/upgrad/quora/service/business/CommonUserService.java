@@ -29,7 +29,7 @@ public class CommonUserService {
      * @throws AuthorizationFailedException ATHR-001 if the token doesn't exit in the DB , ATHR-002 if
      *                                      the user has already logged out using the token.
      */
-    public void checkIfTokenIsValid(String accessToken) throws AuthorizationFailedException {
+    public UserAuthEntity checkIfTokenIsValid(String accessToken) throws AuthorizationFailedException {
         UserAuthEntity userAuthEntity = userAuthDao.getUserAuthByToken(accessToken);
         if (userAuthEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
@@ -38,6 +38,8 @@ public class CommonUserService {
             throw new AuthorizationFailedException(
                     "ATHR-002", "User is signed out.Sign in first to get user details");
         }
+
+        return userAuthEntity;
     }
 
     /**

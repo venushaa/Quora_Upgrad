@@ -1,25 +1,37 @@
 package com.upgrad.quora.service.business;
 
 
-import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.Random;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+
+import org.springframework.stereotype.Component;
 
 
 @Component
 public class PasswordCryptographyProvider {
 
+    private static final String SECRET_KEY_ALGORITHM = "PBKDF2WithHmacSHA512";
+    private static final int HASHING_ITERATIONS = 1000;
+    private static final int HASHING_KEY_LENGTH = 64;
     private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
-    private static String SECRET_KEY_ALGORITHM = "PBKDF2WithHmacSHA512";
-    private static int HASHING_ITERATIONS = 1000;
-    private static int HASHING_KEY_LENGTH = 64;
+
+    /**
+     * This method generates Salt and hashed Password
+     *
+     * @param password char array.
+     * @return String array with [0] encoded salt [1] hashed password.
+     */
+    public String[] encrypt(final String password) {
+        byte[] salt = generateSaltBytes();
+        byte[] hashedPassword = hashPassword(password.toCharArray(), salt);
+        return new String[]{getBase64EncodedBytesAsString(salt), bytesToHex(hashedPassword)};
+    }
 
     /**
      * This method re-generates hashed Password from raw-password and salt.
@@ -74,24 +86,12 @@ public class PasswordCryptographyProvider {
         return new String(hexChars);
     }
 
-    private static String getBase64EncodedBytesAsString(byte bytes[]) {
+    private static String getBase64EncodedBytesAsString(byte[] bytes) {
         return Base64.getEncoder().encodeToString(bytes);
     }
 
     private static byte[] getBase64DecodedStringAsBytes(String decode) {
         return Base64.getDecoder().decode(decode);
-    }
-
-    /**
-     * This method generates Salt and hashed Password
-     *
-     * @param password char array.
-     * @return String array with [0] encoded salt [1] hashed password.
-     */
-    public String[] encrypt(final String password) {
-        byte[] salt = generateSaltBytes();
-        byte[] hashedPassword = hashPassword(password.toCharArray(), salt);
-        return new String[]{getBase64EncodedBytesAsString(salt), bytesToHex(hashedPassword)};
     }
 }
 
