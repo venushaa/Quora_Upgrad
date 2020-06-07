@@ -1,6 +1,4 @@
 /*package com.upgrad.quora.api.controller;
-
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,19 +9,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-
 public class QuestionControllerTest {
-
     @Autowired
     private MockMvc mvc;
-
-
     //This test case passes when you try to create the question but the JWT token entered does not exist in the database.
     @Test
     public void createQuestionWithNonExistingAccessToken() throws Exception {
@@ -31,7 +23,6 @@ public class QuestionControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("ATHR-001"));
     }
-
     //This test case passes when you try to create the question but the user corresponding to the JWT token entered is signed out of the application.
     @Test
     public void createQuestionWithSignedOutUser() throws Exception {
@@ -39,14 +30,12 @@ public class QuestionControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("ATHR-002"));
     }
-
     //This test case passes when you try to get the detail of all the questions and the JWT token entered exists in the database and the user corresponding to that JWT token is signed in.
     @Test
     public void getAllQuestions() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/question/all").header("authorization", "database_accesstoken1"))
                 .andExpect(status().isOk());
     }
-
     //This test case passes when you try to get the detail of all the questions but the JWT token entered does not exist in the database.
     @Test
     public void getAllQuestionsWithNonExistingAccessToken() throws Exception {
@@ -54,7 +43,6 @@ public class QuestionControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("ATHR-001"));
     }
-
     //This test case passes when you try to get the detail of all the questions and the JWT token entered exists in the database but the user corresponding to that JWT token is signed out.
     @Test
     public void getAllQuestionsWithSignedOutUser() throws Exception {
@@ -62,7 +50,6 @@ public class QuestionControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("ATHR-002"));
     }
-
     //This test case passes when you try to edit the question but the JWT token entered does not exist in the database.
     @Test
     public void editQuestionWithNonExistingAccessToken() throws Exception {
@@ -70,7 +57,6 @@ public class QuestionControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("ATHR-001"));
     }
-
     //This test case passes when you try to edit the question and the JWT token entered exists in the database but the user corresponding to that JWT token is signed out.
     @Test
     public void editQuestionWithWithSignedOutUser() throws Exception {
@@ -78,7 +64,6 @@ public class QuestionControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("ATHR-002"));
     }
-
     //This test case passes when you try to edit the question and the JWT token entered exists in the database and the user corresponding to that JWT token is signed in but the corresponding user is not the owner of the question.
     @Test
     public void editQuestionWithoutOwnership() throws Exception {
@@ -86,7 +71,6 @@ public class QuestionControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("ATHR-003"));
     }
-
     //This test case passes when you try to edit the question which does not exist in the database.
     @Test
     public void editNonExistingQuestion() throws Exception {
@@ -94,7 +78,6 @@ public class QuestionControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("QUES-001"));
     }
-
     //This test case passes when you try to delete the question but the JWT token entered does not exist in the database.
     @Test
     public void deleteQuestionWithNonExistingAccessToken() throws Exception {
@@ -102,7 +85,6 @@ public class QuestionControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("ATHR-001"));
     }
-
     //This test case passes when you try to delete the question and the JWT token entered exists in the database but the user corresponding to that JWT token is signed out.
     @Test
     public void deleteQuestionWithSignedOutUser() throws Exception {
@@ -110,7 +92,6 @@ public class QuestionControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("ATHR-002"));
     }
-
     //This test case passes when you try to delete the question and the JWT token entered exists in the database and the user corresponding to that JWT token is signed in but the corresponding user is not the owner of the question or he is not the admin.
     @Test
     public void deleteQuestionWithoutOwnership() throws Exception {
@@ -118,8 +99,6 @@ public class QuestionControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("ATHR-003"));
     }
-
-
     //This test case passes when you try to delete the question which does not exist in the database.
     @Test
     public void deleteNoneExistingQuestion() throws Exception {
@@ -127,7 +106,6 @@ public class QuestionControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("QUES-001"));
     }
-
     //This test case passes when you try to get all the questions posted by a specific user but the JWT token entered does not exist in the database.
     @Test
     public void getAllQuestionsByUserWithNonExistingAccessToken() throws Exception {
@@ -135,7 +113,6 @@ public class QuestionControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("ATHR-001"));
     }
-
     //This test case passes when you try to get all the questions posted by a specific user and the JWT token entered exists in the database but the user corresponding to that JWT token is signed out.
     @Test
     public void getAllQuestionsByUserWithSignedOutUser() throws Exception {
@@ -143,7 +120,6 @@ public class QuestionControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("ATHR-002"));
     }
-
     //This test case passes when you try to get all the questions posted by a specific user which does not exist in the database.
     @Test
     public void getAllQuestionsForNonExistingUser() throws Exception {
@@ -151,7 +127,5 @@ public class QuestionControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("USR-001"));
     }
-
-
 }
 */
