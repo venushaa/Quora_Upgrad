@@ -2,6 +2,7 @@ package com.upgrad.quora.api.exception;
 
 import com.upgrad.quora.api.model.AnswerDeleteResponse;
 import com.upgrad.quora.api.model.AnswerResponse;
+import com.upgrad.quora.api.model.ErrorResponse;
 import com.upgrad.quora.service.exception.AnswerNotFoundException;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
@@ -15,22 +16,22 @@ import org.springframework.web.context.request.WebRequest;
 public class RestExceptionHandler {
 
     @ExceptionHandler(InvalidQuestionException .class)
-    public ResponseEntity<AnswerResponse> invalidQuestionException (InvalidQuestionException exc, WebRequest request) {
-        return new ResponseEntity<AnswerResponse>(
-                new AnswerResponse().id(exc.getCode()).status(exc.getErrorMessage()), HttpStatus.NOT_FOUND);
+    public ResponseEntity<ErrorResponse> invalidQuestionException (InvalidQuestionException exc, WebRequest request) {
+        return new ResponseEntity<ErrorResponse>(
+                new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(AnswerNotFoundException.class)
-    public ResponseEntity<AnswerResponse> answerNotFoundException ( AnswerNotFoundException exc, WebRequest request) {
-        return new ResponseEntity<AnswerResponse>(
-                new AnswerResponse().id(exc.getCode()).status(exc.getErrorMessage()),HttpStatus.NOT_FOUND);
+    public ResponseEntity<ErrorResponse> answerNotFoundException ( AnswerNotFoundException exc, WebRequest request) {
+        return new ResponseEntity<ErrorResponse>(
+                new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.NOT_FOUND);
 
     }
 
     @ExceptionHandler(AuthorizationFailedException.class)
-    public ResponseEntity<AnswerResponse> authorizationFailedException ( AuthorizationFailedException exc, WebRequest request) {
-        return new ResponseEntity<AnswerResponse>(
-                new AnswerResponse().id(exc.getCode()).status(exc.getErrorMessage()), HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<ErrorResponse> authorizationFailedException ( AuthorizationFailedException exc, WebRequest request) {
+        return new ResponseEntity<ErrorResponse>(
+                new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.FORBIDDEN);
     }
 
 
