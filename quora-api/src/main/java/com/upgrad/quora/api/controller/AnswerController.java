@@ -55,7 +55,6 @@ public class AnswerController {
         answerEntity.setUuid(UUID.randomUUID().toString());
         answerEntity.setDate(ZonedDateTime.now());
         answerEntity.setAnswer(answerRequest.getAnswer());
-        //answerEntity.setUser(userAuthEntity.getUserEntity());
 
         final AnswerEntity createdAnswerEntity = answerService.createAnswer(answerEntity, authorization);
         AnswerResponse answerResponse = new AnswerResponse().id(createdAnswerEntity.getUuid().toString()).status("ANSWER CREATED");
