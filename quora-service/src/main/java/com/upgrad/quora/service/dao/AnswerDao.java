@@ -65,12 +65,12 @@ public class AnswerDao {
 
     /**
      *
-     * @param questionId
+     * @param question
      * @return Retrieves list of answer entities for that question ID
      */
-    public List<AnswerEntity> getAnswersbyQUestionId(QuestionEntity questionId){
+    public List<AnswerEntity> getAnswersbyQUestionId(QuestionEntity question){
         try{
-            return entityManager.createNamedQuery("answersByQuestionId",AnswerEntity.class).setParameter("question_id",questionId).getResultList();
+            return entityManager.createNamedQuery("answersByQuestionId",AnswerEntity.class).setParameter("question",question).getResultList();
         }catch (NoResultException nre){
             return null;
         }
