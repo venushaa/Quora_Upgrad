@@ -31,11 +31,11 @@ public class QuestionController {
     @Autowired
     private QuestionUserService questionUserService;
 
-    /*
+    /**
      * Create a question
      *
      * @param questionRequest This object has the content i.e the question.
-     * @param accessToken access token to authenticate user.
+     * @param authorization access token to authenticate user.
      * @return UUID of the question created in DB.
      * @throws AuthorizationFailedException In case the access token is invalid.
      */
@@ -56,10 +56,10 @@ public class QuestionController {
 
     }
 
-    /*
+    /**
      * Get all questions posted by any user.
      *
-     * @param accessToken access token to authenticate user.
+     * @param authorization access token to authenticate user.
      * @return List of QuestionDetailsResponse
      * @throws AuthorizationFailedException In case the access token is invalid.
      */
@@ -76,32 +76,31 @@ public class QuestionController {
         return new ResponseEntity<List<QuestionDetailsResponse>>(questionResponseList, HttpStatus.OK);
     }
 
-    /*
+    /**
      * Delete a question
      *
-     * @param accessToken access token to authenticate user.
+     * @param authorization access token to authenticate user.
      * @param questionId id of the question to be edited.
      * @return Id and status of the question deleted.
      * @throws AuthorizationFailedException In case the access token is invalid.
      * @throws InvalidQuestionException if question with questionId doesn't exist.
      */
     @RequestMapping(method = RequestMethod.DELETE, path = "/question/delete/{questionId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<QuestionDeleteResponse> deleteQuestion(@PathVariable("questionId") final String question_id, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException, InvalidQuestionException {
-        String[] bearerToken = authorization.split("Bearer ");
+    public ResponseEntity<QuestionDeleteResponse> deleteQuestion(@PathVariable("questionId") final String questionId, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException, InvalidQuestionException {
         //check if the user is signed in
-        UserEntity signedinUser = questionUserService.checkIfTokenIsValid(authorization, "delete").getUserEntity();
-        QuestionEntity questionEntity = questionService.getQuestionById(question_id);
+        UserEntity signedInUser = questionUserService.checkIfTokenIsValid(authorization, "delete").getUserEntity();
+        QuestionEntity questionEntity = questionService.getQuestionById(questionId);
 
         //checks if the user is authorized to delete a question before allowing him to do so
-        questionService.deleteQuestion(signedinUser, questionEntity);
+        questionService.deleteQuestion(signedInUser, questionEntity);
         QuestionDeleteResponse questionDeleteResponse = new QuestionDeleteResponse().id(questionEntity.getUuid()).status("QUESTION DELETED");
         return new ResponseEntity<QuestionDeleteResponse>(questionDeleteResponse, HttpStatus.OK);
     }
 
-    /*
+    /**
      * Edit a question
      *
-     * @param accessToken access token to authenticate user.
+     * @param authorization access token to authenticate user.
      * @param questionId id of the question to be edited.
      * @param questionEditRequest new content for the question.
      * @return Id and status of the question edited.
@@ -111,24 +110,23 @@ public class QuestionController {
     @RequestMapping(method = RequestMethod.PUT, path = "/question/edit/{questionId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<QuestionEditResponse> editQuestion(
             @RequestHeader("authorization") final String authorization,
-            @PathVariable("questionId") final String question_id,
+            @PathVariable("questionId") final String questionId,
             QuestionEditRequest questionEditRequest
     )
             throws AuthorizationFailedException, InvalidQuestionException {
-        UserEntity signedinUser = questionUserService.checkIfTokenIsValid(authorization, "edit").getUserEntity();
+        UserEntity signedInUser = questionUserService.checkIfTokenIsValid(authorization, "edit").getUserEntity();
         QuestionEntity questionEntity;
-        questionEntity = questionService.getQuestionById(question_id);
-        //questionEntity.setContent(questionEditRequest.getContent());
-        questionService.editQuestionContent(signedinUser, questionEntity, questionEditRequest.getContent());
+        questionEntity = questionService.getQuestionById(questionId);
+        questionService.editQuestionContent(signedInUser, questionEntity, questionEditRequest.getContent());
         QuestionEditResponse questionEditResponse = new QuestionEditResponse().id(questionEntity.getUuid()).status("QUESTION EDITED");
         return new ResponseEntity<QuestionEditResponse>(questionEditResponse, HttpStatus.OK);
     }
 
-    /*
+    /**
      * Get all questions posted by a user with given userId.
      *
      * @param userId of the user for whom we want to see the questions asked by him
-     * @param accessToken access token to authenticate user.
+     * @param authorization access token to authenticate user.
      * @return List of QuestionDetailsResponse
      * @throws AuthorizationFailedException In case the access token is invalid.
      */
