@@ -45,7 +45,7 @@ public class QuestionService {
 
 
     @Transactional
-    public void editQuestionContent(UserEntity signedinUser, QuestionEntity questionEntity) throws AuthorizationFailedException, InvalidQuestionException {
+    public void editQuestionContent(UserEntity signedinUser, QuestionEntity questionEntity, String questionContent) throws AuthorizationFailedException, InvalidQuestionException {
 
         if (questionEntity == null) {
             throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
@@ -55,6 +55,7 @@ public class QuestionService {
         if (!questionOwner.getUuid().equals(signedinUser.getUuid())) {
             throw new AuthorizationFailedException("ATHR-003", "Only the question owner can edit the question");
         }
+        questionEntity.setContent(questionContent);
         questionDao.editQuestionContent(questionEntity);
     }
 

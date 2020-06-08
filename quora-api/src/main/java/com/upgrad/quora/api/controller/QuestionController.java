@@ -118,8 +118,8 @@ public class QuestionController {
         UserEntity signedinUser = questionUserService.checkIfTokenIsValid(authorization, "edit").getUserEntity();
         QuestionEntity questionEntity;
         questionEntity = questionService.getQuestionById(question_id);
-        questionEntity.setContent(questionEditRequest.getContent());
-        questionService.editQuestionContent(signedinUser, questionEntity);
+        //questionEntity.setContent(questionEditRequest.getContent());
+        questionService.editQuestionContent(signedinUser, questionEntity, questionEditRequest.getContent());
         QuestionEditResponse questionEditResponse = new QuestionEditResponse().id(questionEntity.getUuid()).status("QUESTION EDITED");
         return new ResponseEntity<QuestionEditResponse>(questionEditResponse, HttpStatus.OK);
     }
